@@ -14,6 +14,7 @@ from datetime import datetime, timedelta, timezone
 OWNER = os.environ.get("GITHUB_REPOSITORY_OWNER", "mxsourav")
 TOKEN = os.environ["GITHUB_TOKEN"]
 DIST = "dist"
+os.makedirs(DIST, exist_ok=True)
 CARBON, BORDER, RED, WHITE, GRAY, DIM = "#070708", "#26262B", "#FF2D55", "#FFFFFF", "#C9C9CF", "#8B8B93"
 
 
