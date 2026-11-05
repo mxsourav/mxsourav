@@ -4,8 +4,7 @@
 Queries the GraphQL contributionsCollection (last 365 days) for total
 contributions, best day (highest one-day), current streak and longest
 streak, plus REST user/repo metrics — then renders carbon #070708 SVGs with
-#ff2d55 accents. Output: dist/stats-card.svg, dist/activity-card.svg,
-dist/metrics-card.svg. Stdlib only; GITHUB_TOKEN from env.
+#ff2d55 accents. Output: dist/stats-card.svg, dist/metrics-card.svg. Stdlib only; GITHUB_TOKEN from env.
 """
 import json
 import os
@@ -105,30 +104,6 @@ stats_inner = (
 )
 with open(f"{DIST}/stats-card.svg", "w", encoding="utf-8") as f:
     f.write(card_scaffold(660, 190, stats_inner))
-
-# ── activity card: 53×7 carbon heatmap, red intensity ────────────────────────
-max_count = max((d["contributionCount"] for d in days), default=1) or 1
-cells = []
-cw, ch, gap, x0, y0 = 12, 12, 3.4, 26, 46
-for wi, week in enumerate(cal["weeks"]):
-    for di, d in enumerate(week["contributionDays"]):
-        c = d["contributionCount"]
-        if c == 0:
-            fill = "#131317"
-        else:
-            t = (c / max_count) ** 0.6
-            fills = ["#3a0f18", "#5c1220", "#8f1626", "#c51a31", RED]
-            fill = fills[min(int(t * len(fills)), len(fills) - 1)]
-        cells.append(f'<rect x="{x0 + wi * (cw + gap):.1f}" y="{y0 + di * (ch + gap):.1f}" width="{cw}" height="{ch}" rx="3" fill="{fill}"/>')
-act_inner = (
-    f'<text x="614" y="33" text-anchor="end" font-family="JetBrains Mono,ui-monospace,monospace" '
-    f'font-size="9.5" letter-spacing="1.5" fill="{DIM}">{total:,} CONTRIBUTIONS</text>'
-    f'<text x="26" y="66" font-family="JetBrains Mono,ui-monospace,monospace" font-size="10.5" '
-    f'letter-spacing="2" fill="{GRAY}">COMMIT ACTIVITY — LAST 52 WEEKS</text>'
-    + "".join(cells)
-)
-with open(f"{DIST}/activity-card.svg", "w", encoding="utf-8") as f:
-    f.write(card_scaffold(800, 172, act_inner))
 
 # ── metrics card: repos / stars / followers / years ──────────────────────────
 metrics_inner = (
