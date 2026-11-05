@@ -19,13 +19,14 @@ CARBON, BORDER, RED, WHITE, GRAY, DIM = "#070708", "#26262B", "#FF2D55", "#FFFFF
 
 
 def api(url, payload=None):
-    req = urllib.request.Request(url, method="POST" if payload else "GET")
-    req.add_header("Authorization", f"Bearer {TOKEN}")
-    req.add_header("Accept", "application/vnd.github+json")
-    req.add_header("User-Agent", "stan-profile-cards")
     body = None
     if payload:
         body = json.dumps(payload).encode()
+    req = urllib.request.Request(url, data=body, method="POST" if payload else "GET")
+    req.add_header("Authorization", f"Bearer {TOKEN}")
+    req.add_header("Accept", "application/vnd.github+json")
+    req.add_header("User-Agent", "stan-profile-cards")
+    if payload:
         req.add_header("Content-Type", "application/json")
     with urllib.request.urlopen(req, timeout=60) as r:
         return json.loads(r.read())
